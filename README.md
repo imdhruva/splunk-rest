@@ -4,7 +4,8 @@ Rest Client implementation for Splunk
 ## Example
 
 The consumption can be illustrated as under:
-```package main
+```golang
+package main
 
 import (
 	"bufio"
