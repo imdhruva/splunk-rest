@@ -1,6 +1,7 @@
 package splunk
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -46,16 +47,13 @@ func TestSearch(t *testing.T) {
 	for _, tc := range searchCases {
 		user.SetUsername(tc.user)
 		user.SetPassword(tc.password)
-		err := url.BasicAuth(user)
-		if err != nil {
-			t.Error("FAIL : ", err)
-		}
 		body, err := Search(url, user, tc.search)
 		if err != nil {
 			t.Error("FAIL : ", err)
 		} else if body == nil {
 			t.Error("FAIL : Empty body returned")
 		}
+		fmt.Println(string(body))
 		t.Log("PASS : ", tc.description)
 	}
 }
