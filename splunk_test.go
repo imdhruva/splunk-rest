@@ -53,7 +53,7 @@ func TestSearch(t *testing.T) {
 		} else if body == nil {
 			t.Error("FAIL : Empty body returned")
 		}
-		fmt.Println(string(body))
+		fmt.Println("body : \n" + string(body))
 		t.Log("PASS : ", tc.description)
 	}
 }
