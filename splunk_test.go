@@ -50,19 +50,11 @@ func TestSearch(t *testing.T) {
 		if err != nil {
 			t.Error("FAIL : ", err)
 		}
-		sid, err := url.Search(tc.search, user)
+		body, err := Search(url, user, tc.search)
 		if err != nil {
 			t.Error("FAIL : ", err)
-		} else if sid == "" {
+		} else if body == nil {
 			t.Error("FAIL : Empty body returned")
-		} else {
-			body, err := url.GetSearchResult(sid, user)
-			if err != nil {
-				t.Error("FAIL : ", err)
-			} else if body == nil {
-				t.Error("FAIL : Empty response")
-			}
-			t.Log("body : ", string(body))
 		}
 		t.Log("PASS : ", tc.description)
 	}

@@ -18,8 +18,37 @@ const (
 	RetryAttempt = 10
 )
 
-// Search returns the results of the search string in Splunk
-func (splunkURL URL) Search(query string, user User) (string, error) {
+// Operation is a interface for all the functions that are required for performing
+// diff. operations in Splunk
+type Operation interface {
+	BasicAuth(user User) error
+	TriggerSearch(query string, user User) (string, error)
+	GetSearchResult(jobID string, user User) ([]byte, error)
+}
+
+// Search returns the result of search operation in splunk
+// it encapsulates all the related operations vis-a-vis :
+// triggerring a search; fetching the dispatchStatus; fetching the resultSet
+func Search(ops Operation, user User, searchQuery string) ([]byte, error) {
+	err := ops.BasicAuth(user)
+	if err != nil {
+		return nil, err
+	}
+
+	sid, err := ops.TriggerSearch(searchQuery, user)
+	if err != nil {
+		return nil, err
+	}
+
+	body, err := ops.GetSearchResult(sid, user)
+	if err != nil {
+		return nil, err
+	}
+	return body, nil
+}
+
+// TriggerSearch returns the search identifier for the search operation in Splunk
+func (splunkURL URL) TriggerSearch(query string, user User) (string, error) {
 	query = strings.TrimSpace(query)
 	// check if the query begins with `search` or | (pipe) keyword
 	if !strings.HasPrefix(query, "search") && !strings.HasPrefix(query, "|") {
@@ -49,7 +78,7 @@ func (splunkURL URL) Search(query string, user User) (string, error) {
 	if unmarshallErr != nil {
 		return "", unmarshallErr
 	}
-	
+
 	return sid.Value, nil
 }
 
@@ -64,7 +93,7 @@ func (splunkURL URL) GetJobEndpoint(jobID string) (string, error) {
 
 // GetJobStat fetches result set of the search-job as reprented by rest
 // endpoint /services/search/jobs/{jobID}
-func (user User) GetJobStat(jobID string, splunkURL URL) ([]byte, error) {
+func (splunkURL URL) GetJobStat(jobID string, user User) ([]byte, error) {
 	// create a payload
 	val := url.Values{}
 	var payload io.Reader
@@ -104,7 +133,7 @@ func GetJobStatus(responseByte []byte) (string, error) {
 // IsJobComplete returns boolean to identify if the JobId's dispatchState is "DONE"
 func (splunkURL URL) IsJobComplete(jobID string, user User) (bool, error) {
 	//  get stats for jobID
-	jobStat, err := user.GetJobStat(jobID, splunkURL)
+	jobStat, err := splunkURL.GetJobStat(jobID, user)
 	if err != nil {
 		return false, err
 	}
@@ -134,7 +163,7 @@ func (splunkURL URL) GetSearchResult(jobID string, user User) ([]byte, error) {
 		return nil, err
 	}
 
-	// keep polling the jobID status every 5 seconds to check the status is DONE
+	// keep polling the jobID status every WaitTime seconds to check the status is DONE
 	tempCount := 0
 	// jobComplete, err := user.IsJobComplete(jobID, splunkURL)
 	jobComplete := false
