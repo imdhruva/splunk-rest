@@ -34,29 +34,16 @@ func main() {
 	user.SetUsername(Username)
 	user.SetPassword(pwd)
 
-	// perform authentication splunk
-	err := splunkURL.BasicAuth(user)
+	// perform search operation and return the body this encapsulates the operations
+	// 1. for performing basic authentication
+	// 2. trigerring search and returning a search-id
+	// 3. returing the body of the search
+	body, err := Search(url, user, tc.search)
 	if err != nil {
-		fmt.Printf("ERROR : %s", err)
+		t.Error("FAIL : ", err)
+	} else if body == nil {
+		t.Error("FAIL : Empty body returned")
 	}
-
-	// trigger the search for the search string; this inherently returns the sid
-	sid, err := splunkURL.Search(SearchString, user)
-	if err != nil {
-		fmt.Printf("FAIL : %s", err)
-	} else if sid == "" {
-		fmt.Printf("FAIL : Empty body returned")
-	} else {
-		// fetch the result for the sid; this inherently performs the status check for the search
-		// search will therefore only be returned if the dispatchStatus of the search is 'DONE'
-		// this returns the json formatted/marshalled search output
-		body, err := splunkURL.GetSearchResult(sid, user)
-		if err != nil {
-			fmt.Printf("FAIL : %s", err)
-		} else if body == nil {
-			fmt.Printf("FAIL : Empty response")
-		}
-		fmt.Printf("Search OP :" + string(body))
-	}
+	fmt.Printf("Search OP :" + string(body))
 }
 ```
