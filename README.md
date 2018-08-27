@@ -3,7 +3,7 @@ Rest Client implementation for Splunk
 
 ## Example
 
-The consumption can be illustrated as under:
+The invocation can be illustrated as under:
 ```golang
 package main
 
