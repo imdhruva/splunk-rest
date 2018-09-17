@@ -12,3 +12,4 @@ docker_builder:
                         && docker run --rm -d imdhruva/splunk -p 8089:8089 -t test \
                         && docker inspect $(docker container ls -aq)
     test_script: go test
+
