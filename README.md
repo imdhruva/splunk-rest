@@ -47,3 +47,5 @@ func main() {
 	fmt.Printf("Search OP :" + string(body))
 }
 ```
+
+[![Build Status](https://api.cirrus-ci.com/github/imdhruva/splunk.svg)](https://cirrus-ci.com/github/imdhruva/splunk)

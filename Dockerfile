@@ -18,4 +18,4 @@ RUN /opt/splunk/bin/splunk enable boot-start
 
 ENTRYPOINT /etc/init.d/splunk start && tail -f /opt/splunk/var/log/splunk/splunkd.log
 
-EXPOSE 8000
+EXPOSE 8089

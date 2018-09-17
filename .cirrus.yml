@@ -8,7 +8,7 @@ docker_builder:
   depends_on:
     - lint
   build_script
-    docker_build_script: docker build --tag imdhruva/splunk:latest .
-    docker_run_script: docker run --rm -d imdhruva/splunk -p 8089:8089 -t test
-    docker_check_script: docker inspect $(docker container ls -aq)
-    docker_test_script: go test
+    docker_build_script: docker build --tag imdhruva/splunk:latest . \
+                        && docker run --rm -d imdhruva/splunk -p 8089:8089 -t test \
+                        && docker inspect $(docker container ls -aq)
+    test_script: go test
