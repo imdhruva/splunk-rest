@@ -3,3 +3,12 @@ container:
 
 lint_task:
   check_script: gofmt -d ./*.go
+  
+docker_builder:
+  depends_on:
+    - lint
+  build_script
+    docker_build_script: docker build --tag imdhruva/splunk:latest .
+    docker_run_script: docker run --rm -d imdhruva/splunk -p 8089:8089 -t test
+    docker_check_script: docker inspect $(docker container ls -aq)
+    docker_test_script: go test
