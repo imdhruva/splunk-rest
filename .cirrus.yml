@@ -11,7 +11,7 @@ task:
 
 task:
   name: check_splunk_available
-  splunk_available_script: splunk_status=$(docker container ls -q -f "name=splunk");[[ -n $splunk_status ]] && exit 1
+  splunk_available_script: curl -v http://localhost:8089/
 
 task:
   name: test
