@@ -3,7 +3,7 @@ container:
   additional_containers:
     - name: splunk
       image: imdhruva/splunk:latest
-      port: 8000
+      port: 8089
 
 task:
   name: lint
