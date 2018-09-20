@@ -40,7 +40,7 @@ func main() {
 	// 1. for performing basic authentication
 	// 2. trigerring search and returning a search-id
 	// 3. returing the body of the search
-	body, err := Search(url, user, tc.search)
+	body, err := Search(url, user, SearchString)
 	if err != nil {
 		t.Error("FAIL : ", err)
 	} else if body == nil {
