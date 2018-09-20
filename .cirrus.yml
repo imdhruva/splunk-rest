@@ -1,14 +1,21 @@
 container:
   image: golang:latest
+  additional_containers:
+    - name: splunk
+      image: imdhruva/splunk:latest
+      port: 8000
 
-lint_task:
-  check_script: gofmt -d ./*.go
-  
-docker_builder:
+task:
+  name: lint
+  lint_script: gofmt -d ./*.go
+
+task:
+  name: check_splunk_available
+  splunk_available_test: splunk_status=$(docker container ls -q -f "name=splunk");[[ -n $splunk_status ]] && exit 1
+
+task:
+  name: test
+  code_test: go test
   depends_on:
     - lint
-  build_script
-    docker_build_script: docker build --tag imdhruva/splunk:latest . \
-                        && docker run --rm -d imdhruva/splunk -p 8089:8089 -t test \
-                        && docker inspect $(docker container ls -aq)
-    test_script: go test
+    - check_splunk_available
