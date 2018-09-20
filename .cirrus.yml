@@ -15,7 +15,7 @@ task:
 
 task:
   name: test
-  code_test: go test
+  code_script: go test
   depends_on:
     - lint
     - check_splunk_available
