@@ -1,3 +1,5 @@
+[![Build Status](https://api.cirrus-ci.com/github/imdhruva/splunk.svg)](https://cirrus-ci.com/github/imdhruva/splunk)
+
 # splunk-rest
 Rest Client implementation for Splunk
 

@@ -1,8 +1,21 @@
 container:
   image: golang:latest
+  additional_containers:
+    - name: splunk
+      image: imdhruva/splunk:latest
+      port: 8000
 
-test_task:
-  env:
-    CIRRUS_WORKING_DIR: /go/src/github.com/$CIRRUS_REPO_FULL_NAME
-  get_script: go get -t -v ./...
-  test_script: go test -v ./...
+task:
+  name: lint
+  lint_script: gofmt -d ./*.go
+
+task:
+  name: check_splunk_available
+  splunk_available_test: splunk_status=$(docker container ls -q -f "name=splunk");[[ -n $splunk_status ]] && exit 1
+
+task:
+  name: test
+  code_test: go test
+  depends_on:
+    - lint
+    - check_splunk_available
