@@ -2,7 +2,7 @@ container:
   image: golang:latest
   additional_containers:
     - name: splunk
-      image: imdhruva/splunk:latest
+      image: unforgiving2/splunk:latest
       port: 8089
 
 task:
